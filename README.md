@@ -19,8 +19,9 @@ The following versions are currently being used for projects within this reposit
 This project utilizes the following sources:
 
 * Primary Guide for Xcode & Swift: ["iOS 12 & Swift - The Complete iOS App Development Bootcamp"](https://www.udemy.com/ios-12-app-development-bootcamp/)
+* Xcode .gitignore Template: [github/gitignore](https://github.com/github/gitignore/blob/master/Global/Xcode.gitignore)
 
 
 ---
 ## Changelog
-* **Jun-08-2019** Initial Commit to GitHub
+* **Jun-11-2019** Initial Commit to GitHub
