@@ -23,5 +23,7 @@ This repository and its various projects utilize the following sources:
 
 
 ---
-## Changelog
+## Major Changelog
+Any major updates to this repository will be noted here.
+
 * **Jun-11-2019** Initial Commit to GitHub
