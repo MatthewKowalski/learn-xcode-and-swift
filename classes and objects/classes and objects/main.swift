@@ -9,3 +9,16 @@
 import Foundation
 
 let myCar = Car()
+let otherCar = Car(color: "Blue")
+
+print(myCar.color)
+print(otherCar.color)
+
+myCar.drive()
+otherCar.drive()
+
+print()
+
+let aSelfDrivingCar = SelfDrivingCar()
+print(aSelfDrivingCar.color)
+aSelfDrivingCar.drive()
