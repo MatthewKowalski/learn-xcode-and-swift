@@ -20,5 +20,7 @@ otherCar.drive()
 print()
 
 let aSelfDrivingCar = SelfDrivingCar()
+aSelfDrivingCar.destination = "1 Test Way"
+
 print(aSelfDrivingCar.color)
 aSelfDrivingCar.drive()
