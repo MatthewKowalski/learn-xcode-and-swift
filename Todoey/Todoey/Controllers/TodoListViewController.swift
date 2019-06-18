@@ -33,8 +33,8 @@ class TodoListViewController: UITableViewController {
 //            itemArray = items
 //        }
         
-        let newItem = Item(title: "Sample", done: false)
-        itemArray.append(newItem)
+        // Get items from storage and load them
+        loadItems()
         
     }
     
@@ -146,6 +146,22 @@ class TodoListViewController: UITableViewController {
         
         // Reload the TableView to account for the new data
         self.tableView.reloadData()
+    }
+    
+    func loadItems() {
+        // The "try? ..." turns the result of the method (the ...) into an optional -> from there we can use "optional binding" to unwrap the optional safely
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            // Use decoder instead of UserDefaults
+            let decoder = PropertyListDecoder()
+            
+            do {
+                // Need to specify the data type as the first param of .decode()
+                    // Our data type is an array of Item objects -> to refer to this type (array of Items), we need to use ".self" after the Item array statement ( [Item] )
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding item array, \(error)")
+            }
+        }
     }
 
 }

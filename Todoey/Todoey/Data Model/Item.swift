@@ -8,8 +8,9 @@
 
 import Foundation
 
-// Need our object to inherit the "rules" of being Encodable so that we can use it in said manner
-class Item: Encodable {
+// Need our object to inherit the "rules" of being Encodable & Decodable so that we can use it in said manner (make it conform to both)
+//class Item: Encodable, Decodable {
+class Item: Codable {   // *** NOTE: Can use "Codable" to inherit/conform to both Encodable and Decodable ***
     var title: String
     var done: Bool
     
