@@ -10,7 +10,7 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    let itemArray = ["Eat", "Code", "Sleep"]
+    var itemArray = ["Eat", "Code", "Sleep"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,7 +56,42 @@ class TodoListViewController: UITableViewController {
     // MARK:- Add New Items
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-        // TODO: Left off at 3:45 on Lecture 223
+        // Want a UIAlert to show with a text field so that the user can write in their new item
+        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+        
+        // Create a local textField variable so that we can get the alert TextField from the closure
+        var textField = UITextField()
+        
+        // Add a TextField to the alert
+        alert.addTextField { (alertTextField) in
+            // The placeholder text for the TextField
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            // What will happen once the user clicks the "Add Item" button on the UI Alert
+            
+            // Check to make sure there is actually content inside of the TextField
+                // If the user simply hits "Add Item" w/o writing anything, the TextField.text length is 0
+            if(textField.text!.count != 0) {
+                self.itemArray.append(textField.text!)
+                print("Added")
+            } else {
+                print("Not added")
+            }
+            
+            // Reload the TableView to account for the new data
+            self.tableView.reloadData()
+            
+        }
+        
+        // Add the action to the alert
+        alert.addAction(action)
+        
+        // Show the alert
+        present(alert, animated: true, completion: nil)
+        
     }
     
 
