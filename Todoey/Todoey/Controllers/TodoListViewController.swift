@@ -15,16 +15,21 @@ class TodoListViewController: UITableViewController {
     // Empty array of Item objects
     var itemArray = [Item]()
     
+    // Path to Documents directory in the applicaton's directory -> the path is specified for our custom "Items.plist" file
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
     // Create UserDefaults object
         // UserDefaults -> where you store key-value pairs persistently across launches of our app
-    let defaults = UserDefaults.standard
+    //let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //print(dataFilePath)
+        
         // Load in the array currently saved in our storage
             // ** Use "if let" to make sure that this array exists and is not nil -> if it DOES exist, then set itemArray = items (the array we pulled from storage) **
-//        if let items = defaults.array(forKey: "todoListArray") as? [String] {
+//        if let items = defaults.array(forKey: "todoListArray") as? [Item] {
 //            itemArray = items
 //        }
         
@@ -70,8 +75,8 @@ class TodoListViewController: UITableViewController {
 //        let cell = tableView.cellForRow(at: indexPath)
 //        cell?.accessoryType = (cell?.accessoryType == .checkmark) ? .none : .checkmark
 
-        // Reload the TableView to account for new data
-        tableView.reloadData()
+        // Save the array to reflect updated data && reload the TableView (inside the method)
+        self.saveItems()
         
         // Make it so that the selected row/cell doesn't stay highlighted upon a click
         tableView.deselectRow(at: indexPath, animated: true)
@@ -105,12 +110,13 @@ class TodoListViewController: UITableViewController {
                 self.itemArray.append(Item(title: textField.text!, done: false))
                 
                 // Save the updated array to our UserDefaults -> key-value pair
-                self.defaults.set(self.itemArray, forKey: "todoListArray")
+                // ** NOTE: UserDefaults rejects this & throws an error as we are trying to set an array of custom objects to the plist of UserDefaults -> UserDefaults doesn't handle custom objects like this & throws the error **
+                //self.defaults.set(self.itemArray, forKey: "todoListArray")
+                
+                // Save the array to reflect updated data && reload the TableView (inside the method)
+                self.saveItems()
                 
             }
-            
-            // Reload the TableView to account for the new data
-            self.tableView.reloadData()
             
         }
         
@@ -122,6 +128,25 @@ class TodoListViewController: UITableViewController {
         
     }
     
+    // MARK:- Model Manipulation Methods
+    
+    func saveItems() {
+        // Use encoder instead of UserDefaults due to the above issue we face/discussed
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            
+            // Write the data to our data file path
+            try data.write(to: dataFilePath!)
+            
+        } catch {
+            print("Error encoding item array, \(error)")
+        }
+        
+        // Reload the TableView to account for the new data
+        self.tableView.reloadData()
+    }
 
 }
 

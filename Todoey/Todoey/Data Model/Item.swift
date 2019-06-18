@@ -8,7 +8,8 @@
 
 import Foundation
 
-class Item {
+// Need our object to inherit the "rules" of being Encodable so that we can use it in said manner
+class Item: Encodable {
     var title: String
     var done: Bool
     
