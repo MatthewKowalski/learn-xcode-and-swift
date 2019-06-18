@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Print out path for UserDefaults path -> Useful for debugging and navigating to where our local storage is happening
             // NOTE: After getting into the ../Data/Applicaton/../ directory, go to Library/Preferences/ instead of the Documents directory in order to find the actual plist file
-        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
+        //print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
         
         return true
     }

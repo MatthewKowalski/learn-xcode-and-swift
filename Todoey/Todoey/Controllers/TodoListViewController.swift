@@ -10,7 +10,10 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    var itemArray = ["Eat", "Code", "Sleep"]
+    //var itemArray = ["Eat", "Code", "Sleep"]
+    
+    // Empty array of Item objects
+    var itemArray = [Item]()
     
     // Create UserDefaults object
         // UserDefaults -> where you store key-value pairs persistently across launches of our app
@@ -21,9 +24,12 @@ class TodoListViewController: UITableViewController {
         
         // Load in the array currently saved in our storage
             // ** Use "if let" to make sure that this array exists and is not nil -> if it DOES exist, then set itemArray = items (the array we pulled from storage) **
-        if let items = defaults.array(forKey: "todoListArray") as? [String] {
-            itemArray = items
-        }
+//        if let items = defaults.array(forKey: "todoListArray") as? [String] {
+//            itemArray = items
+//        }
+        
+        let newItem = Item(title: "Sample", done: false)
+        itemArray.append(newItem)
         
     }
     
@@ -40,8 +46,13 @@ class TodoListViewController: UITableViewController {
         // Get reference to the cell(s) within the TableView by their "Reuse Identifier"
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
+        let item = itemArray[indexPath.row]
+        
         // Set the body/text of the cell to the String at the corresponding index in the itemArray
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = item.title
+        
+        // Set the accessory marker depending on the value of the "done" boolean for the Item object(s)
+        cell.accessoryType = (item.done) ? .checkmark : .none
         
         return cell
     }
@@ -50,11 +61,17 @@ class TodoListViewController: UITableViewController {
     
     // Function/Event that gets called when a cell within the TableView is "clicked" on
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(itemArray[indexPath.row])
+        //print(itemArray[indexPath.row])
         
-        let cell = tableView.cellForRow(at: indexPath)
-        cell?.accessoryType = (cell?.accessoryType == .checkmark) ? .none : .checkmark
+        // Set the "done" variable to the opposite of what it is now
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
 
+        // NOTE: No longer need this as we handle it in the above method
+//        let cell = tableView.cellForRow(at: indexPath)
+//        cell?.accessoryType = (cell?.accessoryType == .checkmark) ? .none : .checkmark
+
+        // Reload the TableView to account for new data
+        tableView.reloadData()
         
         // Make it so that the selected row/cell doesn't stay highlighted upon a click
         tableView.deselectRow(at: indexPath, animated: true)
@@ -83,7 +100,9 @@ class TodoListViewController: UITableViewController {
             // Check to make sure there is actually content inside of the TextField
                 // If the user simply hits "Add Item" w/o writing anything, the TextField.text length is 0
             if(textField.text!.count != 0) {
-                self.itemArray.append(textField.text!)
+                
+                //self.itemArray.append(textField.text!)
+                self.itemArray.append(Item(title: textField.text!, done: false))
                 
                 // Save the updated array to our UserDefaults -> key-value pair
                 self.defaults.set(self.itemArray, forKey: "todoListArray")
