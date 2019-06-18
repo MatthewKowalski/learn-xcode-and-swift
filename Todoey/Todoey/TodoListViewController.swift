@@ -12,10 +12,18 @@ class TodoListViewController: UITableViewController {
 
     var itemArray = ["Eat", "Code", "Sleep"]
     
+    // Create UserDefaults object
+        // UserDefaults -> where you store key-value pairs persistently across launches of our app
+    let defaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        // Load in the array currently saved in our storage
+            // ** Use "if let" to make sure that this array exists and is not nil -> if it DOES exist, then set itemArray = items (the array we pulled from storage) **
+        if let items = defaults.array(forKey: "todoListArray") as? [String] {
+            itemArray = items
+        }
         
     }
     
@@ -76,9 +84,10 @@ class TodoListViewController: UITableViewController {
                 // If the user simply hits "Add Item" w/o writing anything, the TextField.text length is 0
             if(textField.text!.count != 0) {
                 self.itemArray.append(textField.text!)
-                print("Added")
-            } else {
-                print("Not added")
+                
+                // Save the updated array to our UserDefaults -> key-value pair
+                self.defaults.set(self.itemArray, forKey: "todoListArray")
+                
             }
             
             // Reload the TableView to account for the new data
