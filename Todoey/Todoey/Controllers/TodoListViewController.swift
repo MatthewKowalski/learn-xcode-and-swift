@@ -9,8 +9,10 @@
 import UIKit
 import CoreData
 
+// Add UISearchBarDelegate to allow this ViewController to be the delegate for the UISearchBar element
 class TodoListViewController: UITableViewController {
-
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     //var itemArray = ["Eat", "Code", "Sleep"]
     
     // Empty array of Item objects
@@ -33,13 +35,16 @@ class TodoListViewController: UITableViewController {
         //print(dataFilePath)
         
         // *-- CoreData sqllite file in this path, but /Library/Application Support/ instead of /Documents/ -> open .sqlite file with a SQLite program --*
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         // Load in the array currently saved in our storage
             // ** Use "if let" to make sure that this array exists and is not nil -> if it DOES exist, then set itemArray = items (the array we pulled from storage) **
 //        if let items = defaults.array(forKey: "todoListArray") as? [Item] {
 //            itemArray = items
 //        }
+        
+        // Set the delegate for the searchBar
+        searchBar.delegate = self
         
         // Get items from storage and load them
         loadItems()
@@ -191,9 +196,11 @@ class TodoListViewController: UITableViewController {
 //    }
     
     // *-- INTRODUCTION OF Core Data --*
-    func loadItems() {
+    // The parameter = ... -> sets a default value for the parameter -> this default value is used if no param/data is passed in for said parameter
+    // "with" = external parameter name, "request" = internal parameter name
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         // This is a general request that asks for all data back
-        let request: NSFetchRequest<Item> = Item.fetchRequest()   // * Specify the Entity for the NSFetchRequest
+        //let request: NSFetchRequest<Item> = Item.fetchRequest()   // * Specify the Entity for the NSFetchRequest
         do {
             // context.fetch(...) returns a NSFetchRequestResult, which we know to be an array of Item objects/entities that is stored in our persistent container
             itemArray = try context.fetch(request)
@@ -201,7 +208,37 @@ class TodoListViewController: UITableViewController {
             print("Error fetching data from context, \(error)")
         }
         
+        // Reload the TableView to reflect the new data
+        tableView.reloadData()
+        
     }
 
+}
+
+// MARK: - SearchBar Delegate Methods
+// Create an "extension" of the TodoListViewController -> allows us to have a seperate area for code/functionality
+    // This extensions "extends" our base ViewController and gives it extra functionality to handle UISearchBar elements
+// Add UISearchBarDelegate to allow this ViewController to be the delegate for the UISearchBar element
+extension TodoListViewController: UISearchBarDelegate {
+    
+    // Tells the delegate that the "Search" button was clicked
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        
+        // Specify our filter/query
+            // %@ represents our arguments
+            // "CONTAINS" -> looking for the title that contains the searchBar text -> not doing an exact matching ( == )
+            // [cd] makes the search (c)ase incensitive and (d)iacritic incensitive
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        // Set the request's sortDescriptor -> notice the variable wants an array
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        loadItems(with: request)
+        
+    }
+    
+    
+    
 }
 
