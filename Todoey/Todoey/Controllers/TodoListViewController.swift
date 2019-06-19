@@ -104,7 +104,7 @@ class TodoListViewController: UITableViewController {
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         // Want a UIAlert to show with a text field so that the user can write in their new item
-        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         
         // Create a local textField variable so that we can get the alert TextField from the closure
         var textField = UITextField()
@@ -116,7 +116,7 @@ class TodoListViewController: UITableViewController {
             textField = alertTextField
         }
         
-        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+        let action = UIAlertAction(title: "Add", style: .default) { (action) in
             // What will happen once the user clicks the "Add Item" button on the UI Alert
             
             // Check to make sure there is actually content inside of the TextField
