@@ -76,6 +76,10 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print(itemArray[indexPath.row])
         
+        // IF we wanted to delete items (while using Core Data0
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
+        
         // Set the "done" variable to the opposite of what it is now
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
 
@@ -84,7 +88,7 @@ class TodoListViewController: UITableViewController {
 //        cell?.accessoryType = (cell?.accessoryType == .checkmark) ? .none : .checkmark
 
         // Save the array to reflect updated data && reload the TableView (inside the method)
-        self.saveItems()
+        saveItems()
         
         // Make it so that the selected row/cell doesn't stay highlighted upon a click
         tableView.deselectRow(at: indexPath, animated: true)
