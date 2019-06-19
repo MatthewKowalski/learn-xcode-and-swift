@@ -238,7 +238,22 @@ extension TodoListViewController: UISearchBarDelegate {
         
     }
     
-    
+    // Delegate method that is fired whenever text in the searchBar changes
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            // Call loadItems(...) without a param to use the parameter's default value
+            loadItems()
+            
+            // DispatchQueue is the "manager" that assigns tasks to the various threads ***********
+                // DispathQueue.main -> grab the main thread
+                // DispatchQueue.main.async -> run an async. task on the main thread
+            DispatchQueue.main.async {
+                // Makes the searchBar remove its "status" as the first responder in its window -> should no longer be the element that is currently selected
+                searchBar.resignFirstResponder()
+            }
+            
+        }
+    }
     
 }
 
