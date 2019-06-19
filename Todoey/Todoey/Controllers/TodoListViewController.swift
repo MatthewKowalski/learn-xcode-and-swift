@@ -18,6 +18,15 @@ class TodoListViewController: UITableViewController {
     // Empty array of Item objects
     var itemArray = [Item]()
     
+    // An Optional Category that will be nil until it is set in the CategoryViewController
+    var selectedCategory: Category? {
+        // ** "didSet" keyword -> runs code in its { } as soon as the selectedCategory variable gets set with a value
+        didSet {
+            // Get items from storage and load them
+            loadItems()
+        }
+    }
+    
     // Path to Documents directory in the applicaton's directory -> the path is specified for our custom "Items.plist" file (UserDefaults)
     //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
@@ -45,9 +54,6 @@ class TodoListViewController: UITableViewController {
         
         // Set the delegate for the searchBar
         searchBar.delegate = self
-        
-        // Get items from storage and load them
-        loadItems()
         
     }
     
@@ -128,8 +134,12 @@ class TodoListViewController: UITableViewController {
                 
                 // *-- INTRODUCTION OF Core Data --*
                 let newItem = Item(context: self.context)
+                
                 newItem.title = textField.text!
                 newItem.done = false
+                // Set the parent category of the Item to the currently selected category
+                newItem.parentCategory = self.selectedCategory
+                
                 self.itemArray.append(newItem)
                 
                 // Save the updated array to our UserDefaults -> key-value pair
@@ -198,9 +208,24 @@ class TodoListViewController: UITableViewController {
     // *-- INTRODUCTION OF Core Data --*
     // The parameter = ... -> sets a default value for the parameter -> this default value is used if no param/data is passed in for said parameter
     // "with" = external parameter name, "request" = internal parameter name
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
         // This is a general request that asks for all data back
         //let request: NSFetchRequest<Item> = Item.fetchRequest()   // * Specify the Entity for the NSFetchRequest
+        
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        // Create a compound predicate so that we can insert both our category-predicate query & the incoming parameter predicate
+//        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, categoryPredicate])
+//
+//        request.predicate = compoundPredicate
+        // Optional Binding -> if "predicate" parameter is not nil (which it has a default value of nil)
+            // additionalPredicate becomes the unwrapped variable if the "predicate" variable is indeed not nil
+        if let additionalPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
         do {
             // context.fetch(...) returns a NSFetchRequestResult, which we know to be an array of Item objects/entities that is stored in our persistent container
             itemArray = try context.fetch(request)
@@ -229,12 +254,12 @@ extension TodoListViewController: UISearchBarDelegate {
             // %@ represents our arguments
             // "CONTAINS" -> looking for the title that contains the searchBar text -> not doing an exact matching ( == )
             // [cd] makes the search (c)ase incensitive and (d)iacritic incensitive
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
         // Set the request's sortDescriptor -> notice the variable wants an array
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
-        loadItems(with: request)
+        loadItems(with: request, predicate: predicate)
         
     }
     

@@ -46,6 +46,32 @@ class CategoryViewController: UITableViewController {
     
     // ----------
     
+    // MARK: - TableView Delegate Methods
+    
+    // Function/Event that gets called when a cell within the TableView is "clicked" on
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        // Trigger the segue to the specific "items" of that category
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    
+    // Function/Event that gets called right before we perform a segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Cast the segue destination's ViewController as a "TodoListViewController" as we know that is where the segue is going
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        // Get the category that corresponds to the selected cell
+            // The indexPath that identifies the current row that is selected -> returns an optional if nothing is selected
+            // Use "if let".
+        if let indexPath = tableView.indexPathForSelectedRow {
+            // If the result of the optional is not nil, run the code
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
+            
+        }
+    }
+    
+    // ----------
+    
     // MARK: - Data Manipulation Methods
     
     func saveCategories() {
@@ -113,13 +139,6 @@ class CategoryViewController: UITableViewController {
         // Show the alert
         present(alert, animated: true, completion: nil)
     }
-    
-    // ----------
-    
-    
-    // MARK: - TableView Delegate Methods
-    
-    
     
     // ----------
     
