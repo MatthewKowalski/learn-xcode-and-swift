@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
 
@@ -17,6 +18,10 @@ class TodoListViewController: UITableViewController {
     
     // Path to Documents directory in the applicaton's directory -> the path is specified for our custom "Items.plist" file
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+    // *-- INTRODUCTION OF Core Data --*
+    // "shared" returns the singleton app instance -> refers to our live application (when the app is running) -> we then cast is as our AppDelegate
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     // Create UserDefaults object
         // UserDefaults -> where you store key-value pairs persistently across launches of our app
@@ -34,7 +39,7 @@ class TodoListViewController: UITableViewController {
 //        }
         
         // Get items from storage and load them
-        loadItems()
+        //loadItems()
         
     }
     
@@ -107,7 +112,13 @@ class TodoListViewController: UITableViewController {
             if(textField.text!.count != 0) {
                 
                 //self.itemArray.append(textField.text!)
-                self.itemArray.append(Item(title: textField.text!, done: false))
+                //self.itemArray.append(Item(title: textField.text!, done: false))
+                
+                // *-- INTRODUCTION OF Core Data --*
+                let newItem = Item(context: self.context)
+                newItem.title = textField.text!
+                newItem.done = false
+                self.itemArray.append(newItem)
                 
                 // Save the updated array to our UserDefaults -> key-value pair
                 // ** NOTE: UserDefaults rejects this & throws an error as we are trying to set an array of custom objects to the plist of UserDefaults -> UserDefaults doesn't handle custom objects like this & throws the error **
@@ -132,37 +143,45 @@ class TodoListViewController: UITableViewController {
     
     func saveItems() {
         // Use encoder instead of UserDefaults due to the above issue we face/discussed
-        let encoder = PropertyListEncoder()
+//        let encoder = PropertyListEncoder()
+//
+//        do {
+//            let data = try encoder.encode(itemArray)
+//
+//            // Write the data to our data file path
+//            try data.write(to: dataFilePath!)
+//
+//        } catch {
+//            print("Error encoding item array, \(error)")
+//        }
         
+        // *-- INTRODUCTION OF Core Data --*
         do {
-            let data = try encoder.encode(itemArray)
+            // Try to save to our persistent storage
+            try context.save()
             
-            // Write the data to our data file path
-            try data.write(to: dataFilePath!)
-            
+            // Reload the TableView to account for the new data
+            self.tableView.reloadData()
         } catch {
-            print("Error encoding item array, \(error)")
+            print("Error saving context, \(error)")
         }
-        
-        // Reload the TableView to account for the new data
-        self.tableView.reloadData()
     }
     
-    func loadItems() {
-        // The "try? ..." turns the result of the method (the ...) into an optional -> from there we can use "optional binding" to unwrap the optional safely
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            // Use decoder instead of UserDefaults
-            let decoder = PropertyListDecoder()
-            
-            do {
-                // Need to specify the data type as the first param of .decode()
-                    // Our data type is an array of Item objects -> to refer to this type (array of Items), we need to use ".self" after the Item array statement ( [Item] )
-                itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("Error decoding item array, \(error)")
-            }
-        }
-    }
+//    func loadItems() {
+//        // The "try? ..." turns the result of the method (the ...) into an optional -> from there we can use "optional binding" to unwrap the optional safely
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            // Use decoder instead of UserDefaults
+//            let decoder = PropertyListDecoder()
+//
+//            do {
+//                // Need to specify the data type as the first param of .decode()
+//                    // Our data type is an array of Item objects -> to refer to this type (array of Items), we need to use ".self" after the Item array statement ( [Item] )
+//                itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                print("Error decoding item array, \(error)")
+//            }
+//        }
+//    }
 
 }
 
