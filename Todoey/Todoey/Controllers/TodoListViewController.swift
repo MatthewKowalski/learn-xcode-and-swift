@@ -16,8 +16,8 @@ class TodoListViewController: UITableViewController {
     // Empty array of Item objects
     var itemArray = [Item]()
     
-    // Path to Documents directory in the applicaton's directory -> the path is specified for our custom "Items.plist" file
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    // Path to Documents directory in the applicaton's directory -> the path is specified for our custom "Items.plist" file (UserDefaults)
+    //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     // *-- INTRODUCTION OF Core Data --*
     // "shared" returns the singleton app instance -> refers to our live application (when the app is running) -> we then cast is as our AppDelegate
@@ -32,6 +32,9 @@ class TodoListViewController: UITableViewController {
         
         //print(dataFilePath)
         
+        // *-- CoreData sqllite file in this path, but /Library/Application Support/ instead of /Documents/ -> open .sqlite file with a SQLite program --*
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
         // Load in the array currently saved in our storage
             // ** Use "if let" to make sure that this array exists and is not nil -> if it DOES exist, then set itemArray = items (the array we pulled from storage) **
 //        if let items = defaults.array(forKey: "todoListArray") as? [Item] {
@@ -39,7 +42,7 @@ class TodoListViewController: UITableViewController {
 //        }
         
         // Get items from storage and load them
-        //loadItems()
+        loadItems()
         
     }
     
@@ -182,6 +185,19 @@ class TodoListViewController: UITableViewController {
 //            }
 //        }
 //    }
+    
+    // *-- INTRODUCTION OF Core Data --*
+    func loadItems() {
+        // This is a general request that asks for all data back
+        let request: NSFetchRequest<Item> = Item.fetchRequest()   // * Specify the Entity for the NSFetchRequest
+        do {
+            // context.fetch(...) returns a NSFetchRequestResult, which we know to be an array of Item objects/entities that is stored in our persistent container
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context, \(error)")
+        }
+        
+    }
 
 }
 
