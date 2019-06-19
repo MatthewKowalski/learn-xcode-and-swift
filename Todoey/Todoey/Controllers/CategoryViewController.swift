@@ -38,10 +38,8 @@ class CategoryViewController: UITableViewController {
         // Get reference to the cell(s) within the TableView by their "Reuse Identifier"
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
         
-        let category = categoryArray[indexPath.row]
-        
         // Set the body/text of the cell to the String at the corresponding index in the itemArray
-        cell.textLabel?.text = category.name
+        cell.textLabel?.text = categoryArray[indexPath.row].name
         
         return cell
     }
@@ -54,12 +52,12 @@ class CategoryViewController: UITableViewController {
         do {
             // Try to save to our persistent storage
             try context.save()
-            
-            // Reload the TableView to account for the new data
-            self.tableView.reloadData()
         } catch {
             print("Error saving context, \(error)")
         }
+        
+        // Reload the TableView to account for the new data
+        self.tableView.reloadData()
     }
     
     func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
@@ -99,6 +97,7 @@ class CategoryViewController: UITableViewController {
             if(textField.text!.count != 0) {
                 let newCategory = Category(context: self.context)
                 newCategory.name = textField.text!
+                
                 self.categoryArray.append(newCategory)
                 
                 // Save the array to reflect updated data && reload the TableView (inside the method)
