@@ -11,4 +11,15 @@ Follows the [Udemy Course](https://www.udemy.com/ios-12-app-development-bootcamp
 ---
 ## Interesting Concepts
 A section to list any new, interesting concepts that I may come across while working on this example project.
+
 * iOS applications are contained in their own **"sandbox"** environments and therefore cannot directly affect the OS
+* **didSet** keyword for Optionals
+  * Runs code in between its `{ }` once the variable it is attached to gets set with a value (meaning it is no longer `nil`)
+  * **Example:**
+```swift
+ var selectedCategory: Category? {
+    didSet {
+        loadItems()
+    }
+}
+```
