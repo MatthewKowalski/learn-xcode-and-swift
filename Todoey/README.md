@@ -26,7 +26,7 @@ A section to list any new, interesting concepts that I may come across while wor
 
 * **Nil-Coalescing Operator**
   * Handles the possibility of an optional being `nil` in one line
-  * From the [Swift Docs](https://docs.swift.org/swift-book/LanguageGuide/BasicOperators.html), this operator is essentially shorthand for a ternary operator that is handling options
+  * From the [Swift Docs](https://docs.swift.org/swift-book/LanguageGuide/BasicOperators.html), this operator is essentially shorthand for a ternary operator that is handling optionals
   * **Example:**
   ```swift
   // Ternary Operator
