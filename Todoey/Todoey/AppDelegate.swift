@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData // imported as of Lecture 236
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +22,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Print out path for UserDefaults path -> Useful for debugging and navigating to where our local storage is happening
             // NOTE: After getting into the ../Data/Applicaton/../ directory, go to Library/Preferences/ instead of the Documents directory in order to find the actual plist file
         //print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
+        
+        // Print out the path for our Realm DB
+        //print(Realm.Configuration.defaultConfiguration.fileURL!)
+        
+//        let data = Data()
+//        data.name = "Matt"
+//        data.age = 100
+        
+        // Create & push data to Realm
+        do {
+            // Can use ' _ ' as we don't need a variable name (as we aren't using it for anything)
+            _ = try Realm()
+//            try realm.write {
+//                realm.add(data)
+//            }
+        } catch {
+            print("Error with realm init, \(error)")
+        }
         
         return true
     }
