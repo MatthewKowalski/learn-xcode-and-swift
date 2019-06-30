@@ -9,6 +9,7 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import SwipeCellKit
 
 class CategoryViewController: UITableViewController {
     
@@ -31,6 +32,8 @@ class CategoryViewController: UITableViewController {
         // Load categories from persistent storage
         loadCategories()
         
+        tableView.rowHeight = 85.0
+        
     }
     
     
@@ -50,13 +53,16 @@ class CategoryViewController: UITableViewController {
     // This gets run for each cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Get reference to the cell(s) within the TableView by their "Reuse Identifier"
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as! SwipeTableViewCell // Cast as SwipeTableViewCell to use SwipeCellKit library
         
         // Set the body/text of the cell to the String at the corresponding index in the itemArray
         //cell.textLabel?.text = categoryArray[indexPath.row].name
         
         // **--- INTRODUCTION OF Realm ---**
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Added Yet"
+        
+        // Set cell delegate so that we can use SwipeCellKit
+        cell.delegate = self
         
         return cell
     }
@@ -205,5 +211,46 @@ class CategoryViewController: UITableViewController {
     }
     
     // ----------
+    
+}
+
+// MARK:- Swipe Cell Delegate Methods
+extension CategoryViewController: SwipeTableViewCellDelegate {
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { (action, indexPath) in
+            // Handle the action
+            
+            // If categories is NOT nil, access the Category object at indexPath.row & execute the code in { }
+            if let categoryToDelete = self.categories?[indexPath.row] {
+                do {
+                    try self.realm.write {
+                        self.realm.delete(categoryToDelete)  // Can use this to delete a Category object from our Realm DB
+                    }
+                } catch {
+                    print("Error deleting category, \(error)")
+                }
+                
+                // Reload the TableView to see changes
+                //tableView.reloadData()
+            }
+        }
+        
+        // Action Appearance
+        deleteAction.image = UIImage(named: "delete-icon")
+        
+        return [deleteAction]
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+        var options = SwipeTableOptions()
+        
+        options.expansionStyle = .destructive   // This option removes the cell -> so we don't need to call tableView.reloadData() in the above delegate method
+        
+        return options
+    }
+    
     
 }
