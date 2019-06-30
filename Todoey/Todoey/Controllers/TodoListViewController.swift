@@ -11,7 +11,8 @@ import UIKit
 import RealmSwift
 
 // Add UISearchBarDelegate to allow this ViewController to be the delegate for the UISearchBar element
-class TodoListViewController: UITableViewController {
+//class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {    // inherit our custom ViewController / super-class
     @IBOutlet weak var searchBar: UISearchBar!
     
     //var itemArray = ["Eat", "Code", "Sleep"]
@@ -303,6 +304,9 @@ class TodoListViewController: UITableViewController {
         
         tableView.reloadData()
     }
+    
+    // MARK: -
+    // TODO: Finish MARK Tag & Integrate SwipeTableViewController <---------
 
 }
 

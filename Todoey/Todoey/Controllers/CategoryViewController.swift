@@ -9,9 +9,9 @@
 import UIKit
 //import CoreData
 import RealmSwift
-import SwipeCellKit
 
-class CategoryViewController: UITableViewController {
+//class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {    // Inherit from our custom ViewController
     
     // Init a new Realm
     let realm = try! Realm()
@@ -52,18 +52,22 @@ class CategoryViewController: UITableViewController {
     
     // This gets run for each cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Get reference to the cell(s) within the TableView by their "Reuse Identifier"
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as! SwipeTableViewCell // Cast as SwipeTableViewCell to use SwipeCellKit library
         
-        // Set the body/text of the cell to the String at the corresponding index in the itemArray
-        //cell.textLabel?.text = categoryArray[indexPath.row].name
+//        // Get reference to the cell(s) within the TableView by their "Reuse Identifier"
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as! SwipeTableViewCell // Cast as SwipeTableViewCell to use SwipeCellKit library
+//
+//        // Set the body/text of the cell to the String at the corresponding index in the itemArray
+//        //cell.textLabel?.text = categoryArray[indexPath.row].name
+        
+        // Tap into our custom SuperClass to build the cell
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         // **--- INTRODUCTION OF Realm ---**
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Added Yet"
-        
-        // Set cell delegate so that we can use SwipeCellKit
-        cell.delegate = self
-        
+//
+//        // Set cell delegate so that we can use SwipeCellKit
+//        cell.delegate = self
+//
         return cell
     }
     
@@ -150,6 +154,24 @@ class CategoryViewController: UITableViewController {
     
     // ----------
     
+    // MARK: - Delete Data From Swipe
+    
+    // Override the function from the super-class
+    override func updateModel(at indexPath: IndexPath) {
+        // If categories is NOT nil, access the Category object at indexPath.row & execute the code in { }
+        if let categoryToDelete = self.categories?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(categoryToDelete)  // Can use this to delete a Category object from our Realm DB
+                }
+            } catch {
+                print("Error deleting category, \(error)")
+            }
+        }
+    }
+    
+    // ----------
+    
     // MARK: - Add New Categories
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         // Want a UIAlert to show with a text field so that the user can write in their new category
@@ -211,46 +233,4 @@ class CategoryViewController: UITableViewController {
     }
     
     // ----------
-    
-}
-
-// MARK:- Swipe Cell Delegate Methods
-extension CategoryViewController: SwipeTableViewCellDelegate {
-    
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        guard orientation == .right else { return nil }
-        
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { (action, indexPath) in
-            // Handle the action
-            
-            // If categories is NOT nil, access the Category object at indexPath.row & execute the code in { }
-            if let categoryToDelete = self.categories?[indexPath.row] {
-                do {
-                    try self.realm.write {
-                        self.realm.delete(categoryToDelete)  // Can use this to delete a Category object from our Realm DB
-                    }
-                } catch {
-                    print("Error deleting category, \(error)")
-                }
-                
-                // Reload the TableView to see changes
-                //tableView.reloadData()
-            }
-        }
-        
-        // Action Appearance
-        deleteAction.image = UIImage(named: "delete-icon")
-        
-        return [deleteAction]
-    }
-    
-    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
-        var options = SwipeTableOptions()
-        
-        options.expansionStyle = .destructive   // This option removes the cell -> so we don't need to call tableView.reloadData() in the above delegate method
-        
-        return options
-    }
-    
-    
 }
