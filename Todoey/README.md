@@ -39,3 +39,22 @@ A section to list any new, interesting concepts that I may come across while wor
 
   return categories?.count ?? 1
   ```
+
+* **guard** keyword ([Description Source](https://stackoverflow.com/a/32256911/8598331))
+  * Handles possible errors like an `if let` statement, but has distinct differences:
+    * The `else` block must exit the current scope
+      * Generally means it must call `return` or terminate the program
+    * > `guard` is used to provide early return without requiring nesting of the rest of the function
+  * > Use `if let` when the `non-nil` case is valid. Use `guard` when the `nil` case represents some sort of error
+  * **Example:**
+  ```swift
+  if let colorHex = selectedCategory?.color {
+      print(colorHex)
+  }
+  ```
+  Becomes something like
+  ```swift
+  guard let colorHex = selectedCategory?.color else { fatalError() }
+
+  print(colorHex)
+  ```
