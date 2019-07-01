@@ -9,6 +9,7 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import ChameleonFramework
 
 //class CategoryViewController: UITableViewController {
 class CategoryViewController: SwipeTableViewController {    // Inherit from our custom ViewController
@@ -64,6 +65,11 @@ class CategoryViewController: SwipeTableViewController {    // Inherit from our 
         
         // **--- INTRODUCTION OF Realm ---**
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Added Yet"
+        
+        // If categories[indexPath.row].color is nil (i.e., it doesn't have a color yet), set the hexString value to "0096FF" (the color of our toolbar)
+            // If it's not nil, set it to that value
+        cell.backgroundColor = UIColor(hexString: categories?[indexPath.row].color ?? "0096FF")
+        
 //
 //        // Set cell delegate so that we can use SwipeCellKit
 //        cell.delegate = self
@@ -214,6 +220,7 @@ class CategoryViewController: SwipeTableViewController {    // Inherit from our 
             if(textField.text!.count != 0) {
                 let newCategory = Category()
                 newCategory.name = textField.text!
+                newCategory.color = UIColor.randomFlat.hexValue()   // Get the hex-value String from the random color so that we can save it persistently
                 
                 // ** NOTE: Since we are using the Results type (auto-updating container), we no longer need to append to it -> it simply auto-updates **
                 //self.categoryArray.append(newCategory)

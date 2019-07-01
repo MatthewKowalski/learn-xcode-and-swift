@@ -9,6 +9,7 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import ChameleonFramework
 
 // Add UISearchBarDelegate to allow this ViewController to be the delegate for the UISearchBar element
 //class TodoListViewController: UITableViewController {
@@ -94,6 +95,14 @@ class TodoListViewController: SwipeTableViewController {    // inherit our custo
         if let item = todoItems?[indexPath.row] {
             // Set the body/text of the cell to the String at the corresponding index in the itemArray
             cell.textLabel?.text = item.title
+            
+            // Change the cells background color -> gradient % based on # of todo Items (using ChameleonFramework)
+                // Utilize the color coming from the selectedCategory
+            if let color = UIColor(hexString: selectedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                cell.backgroundColor = color
+                // Set the TextLabel's text-color using the ConstrastColor ChameleonFramework Algorithm -> essentially determines if the text-color should be light or dark & adjusts accordingly
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
             
             // Set the accessory marker depending on the value of the "done" boolean for the Item object(s)
             cell.accessoryType = (item.done) ? .checkmark : .none
@@ -305,7 +314,8 @@ class TodoListViewController: SwipeTableViewController {    // inherit our custo
     // **-- INTRODUCTION OF Realm --**
     func loadItems() {
         // Get the items from the selected category relationship & sort by "title" in ascending order
-        todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        //todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        todoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true)   // I changed the sorting because I want sorting by dateCreated instead of title
         
         tableView.reloadData()
     }

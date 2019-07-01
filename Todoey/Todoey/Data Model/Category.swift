@@ -15,6 +15,7 @@ import RealmSwift
  */
 class Category: Object {
     @objc dynamic var name: String = ""
+    @objc dynamic var color: String = ""
     
     // Specify a relationship in Realm (similar to how we had it in CoreData
     // "List" comes from Realm -> basically a container type

@@ -18,6 +18,8 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         // Change the cell height to account for the SwipeCellKit delete-icon
             // This will change the TableView rowHeight for all inheriting classes
         tableView.rowHeight = 85.0
+        
+        tableView.separatorStyle = .none    // Set to .none to remove the gray seperator lines inbetween the cells
     }
     
     //MARK:- TableView DataSource Methods
