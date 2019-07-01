@@ -15,7 +15,9 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+        // Change the cell height to account for the SwipeCellKit delete-icon
+            // This will change the TableView rowHeight for all inheriting classes
+        tableView.rowHeight = 85.0
     }
     
     //MARK:- TableView DataSource Methods

@@ -80,9 +80,14 @@ class TodoListViewController: SwipeTableViewController {    // inherit our custo
     // This gets run for each cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Get reference to the cell(s) within the TableView by their "Reuse Identifier"
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        //let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         //let item = itemArray[indexPath.row]
+        
+        
+        // Tap into our custom SuperClass to build the cell
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
         
         // **--- INTRODUCTION OF Realm ---**
         // If todoItems is not nil, grab the item at indexPath.row & run the code
@@ -305,8 +310,23 @@ class TodoListViewController: SwipeTableViewController {    // inherit our custo
         tableView.reloadData()
     }
     
-    // MARK: -
-    // TODO: Finish MARK Tag & Integrate SwipeTableViewController <---------
+    // MARK: - Delete Data From Swipe
+    
+    // Override the function from the super-class
+    override func updateModel(at indexPath: IndexPath) {
+        // If todoItems is NOT nil, access the Item object at indexPath.row & execute the code in { }
+        if let itemToDelete = self.todoItems?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(itemToDelete)  // Can use this to delete an Item object from our Realm DB
+                }
+            } catch {
+                print("Error deleting category, \(error)")
+            }
+        }
+    }
+    
+    // ----------
 
 }
 

@@ -32,7 +32,7 @@ class CategoryViewController: SwipeTableViewController {    // Inherit from our 
         // Load categories from persistent storage
         loadCategories()
         
-        tableView.rowHeight = 85.0
+        //tableView.rowHeight = 85.0    // -> now handled in the superclass, SwipeTableViewController
         
     }
     
