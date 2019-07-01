@@ -78,14 +78,13 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Items" id="Umx-A5-Ao6">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="aue-XV-kcA">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="addButtonPressed:" destination="6ZK-SU-Pzg" id="uG6-Oc-5ZN"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="searchBar" destination="Hk5-mW-mAh" id="wmo-x0-Nxe"/>
+                        <outlet property="searchBar" destination="Hk5-mW-mAh" id="vea-HU-gc4"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rGS-50-xKD" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -97,11 +96,14 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="WSj-ix-qO4" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="sIB-6l-BCz">
-                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="sIB-6l-BCz">
+                        <rect key="frame" x="0.0" y="20" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.0" green="0.58823529411764708" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </textAttributes>
                     </navigationBar>

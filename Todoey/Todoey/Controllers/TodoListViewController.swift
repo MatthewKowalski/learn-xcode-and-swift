@@ -62,10 +62,93 @@ class TodoListViewController: SwipeTableViewController {    // inherit our custo
 //            itemArray = items
 //        }
         
+        // If selectedCategory.color is not nil, proceed & run the code in { }
+//        if let colorHex = selectedCategory?.color {
+//
+//            // Shows us that the navigationController may be nil at this point during the code (in viewDidLoad()) -> tells us we should run this code somewhere else
+//            //guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist") }
+//
+//            // The tint color to apply to the navigation bar background.
+//            navigationController?.navigationBar.barTintColor = UIColor(hexString: colorHex)
+//        }
+        
         // Set the delegate for the searchBar
         searchBar.delegate = self
         
     }
+    
+    // MARK: - Navbar Customization
+    
+    // This function is called later than viewDidLoad() -> called at the point right before the view is going to appear on screen
+        // At this point, the navigation controller will be set
+    override func viewWillAppear(_ animated: Bool) {
+//        if let colorHex = selectedCategory?.color {
+//
+//            // A localized string that represents the view this controller manages
+//            title = selectedCategory!.name
+//
+//            guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist") }
+//
+//            if let navBarColor = UIColor(hexString: colorHex) {
+//                // The tint color to apply to the navigation bar background.
+//                navBar.barTintColor = navBarColor
+//
+//                // The tint color to apply to the navigation items and *** bar button items ***
+//                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+//
+//                // Change the color of the title (in our case, "large"TitleTextAttributes because we are using the Large Title option)
+//                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
+//
+//                // The tint color to apply to the Search Bar background
+//                searchBar.barTintColor = navBarColor
+//            }
+//        }
+        
+        // A localized string that represents the view this controller manages
+        title = selectedCategory?.name
+        
+        // Can convert to " guard let " as we are presumming this operation to almost never fail (i.e., throw the "else" of an if-let)
+        guard let colorHex = selectedCategory?.color else { fatalError() }
+        
+        updateNavBar(withHexCode: colorHex)
+
+    }
+    
+    // Gets called when the view is just about to disappear and just before the current navcontroller is going to get destroyed
+    override func viewWillDisappear(_ animated: Bool) {
+        // Guard here in case an invalid hex string was specified
+        //guard let originalColor = UIColor(hexString: "0096FF") else { fatalError("Hex Color does not exist") }
+        // Don't need to worry about guarding against the navigationController being nil as the view is about to disappear and we know the navController already exists
+//        navigationController?.navigationBar.barTintColor = originalColor
+//        navigationController?.navigationBar.tintColor = UIColor.flatWhite
+//        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.flatWhite]
+        
+        updateNavBar(withHexCode: "0096FF")
+    }
+    
+    // ----------
+    
+    // MARK: - Nav Bar Setup Methods
+    
+    func updateNavBar(withHexCode colorHexCode: String) {
+        guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist") }
+        
+        guard let navBarColor = UIColor(hexString: colorHexCode) else { fatalError() }
+        
+        // The tint color to apply to the navigation bar background.
+        navBar.barTintColor = navBarColor
+        
+        // The tint color to apply to the navigation items and *** bar button items ***
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+        
+        // Change the color of the title (in our case, "large"TitleTextAttributes because we are using the Large Title option)
+        navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
+        
+        // The tint color to apply to the Search Bar background
+        searchBar.barTintColor = navBarColor
+    }
+    
+    // ----------
     
     // MARK:- TableView Datasource Methods
     // Essentially required to show the cells in the TableView
