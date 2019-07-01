@@ -70,6 +70,10 @@ class CategoryViewController: SwipeTableViewController {    // Inherit from our 
             // If it's not nil, set it to that value
         cell.backgroundColor = UIColor(hexString: categories?[indexPath.row].color ?? "0096FF")
         
+        guard let categoryColor = cell.backgroundColor else { fatalError("Invalid background color") }
+        
+        cell.textLabel?.textColor = ContrastColorOf(categoryColor, returnFlat: true)
+        
 //
 //        // Set cell delegate so that we can use SwipeCellKit
 //        cell.delegate = self
@@ -168,6 +172,7 @@ class CategoryViewController: SwipeTableViewController {    // Inherit from our 
         if let categoryToDelete = self.categories?[indexPath.row] {
             do {
                 try self.realm.write {
+                    self.realm.delete(categoryToDelete.items)   // Delete all of the categories items prior to deleting the Category
                     self.realm.delete(categoryToDelete)  // Can use this to delete a Category object from our Realm DB
                 }
             } catch {
