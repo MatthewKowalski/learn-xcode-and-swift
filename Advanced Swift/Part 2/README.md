@@ -28,4 +28,3 @@ A section to list any new, interesting concepts that I may come across while wor
   * If we are going to have a function that changes something about the `struct`, say a property value, we need to mark the function with the `mutating` keyword
     * `struct` is immutable by default (because a `struct` cannot tell in advance if it will be mutable or immutable -> `var` or `let`), therefore we need to create a new copy of the struct when we call a function that mutates it
     * There is a good breakdown of this on [stackoverflow](https://stackoverflow.com/a/24035861/8598331)
-  * t
