@@ -72,7 +72,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 fatalError("Model failed to process image.")
             }
             
-            print(results)
+            //print(results)    // Print the results -> the first result is the one with the highest confidence
+            
+            // Check the first result and see if it contains "hotdog" -> doing this as the app is based on the show Silicon Valley & the "SeeFood" app
+            if let firstResult = results.first {
+                self.navigationItem.title = (firstResult.identifier.contains("hotdog")) ? "Hotdog!" : "Not Hotdog!"
+            }
+            
         }
         
         let handler = VNImageRequestHandler(ciImage: image)
