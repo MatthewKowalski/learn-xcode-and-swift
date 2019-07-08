@@ -40,6 +40,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if let userPickedImg = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             // Set the imageView to the image that they picked
             imageView.image = userPickedImg
+            
+            // Convert the UIImage to a CIImage (CoreImage Image) -> allows us to use the CoreML & Vision frameworks
+            guard let ciimage = CIImage(image: userPickedImg) else {
+                fatalError("Error converting UIImage to CIImage.")
+            }
+            
+            // Perform the image analysis
+            detect(image: ciimage)
+            
         }
         
         // Dismiss the ImagePicker
@@ -47,6 +56,36 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
     }
 
+    func detect(image: CIImage) {
+        // Define our model
+            // Need "try" as it will attempt the operation which may throw an error
+            // If it succeeds, the result will be an Optional. Else, it will be nil
+        guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else {   // VNCoreMLModel comes from Vision & allows us to perform an image analysis request
+            fatalError("Loading CoreML Model Failed.")
+        }
+        
+        // Create Vision CoreML request
+        let request = VNCoreMLRequest(model: model) { (vnRequest, error) in
+            // Proccess the result of the request
+                // Cast the results because it comes back as an array of Any -> [Any]
+            guard let results = vnRequest.results as? [VNClassificationObservation] else {
+                fatalError("Model failed to process image.")
+            }
+            
+            print(results)
+        }
+        
+        let handler = VNImageRequestHandler(ciImage: image)
+        
+        do {
+            // Make the handler perform our request
+            try handler.perform([request])
+        } catch {
+            print(error)
+        }
+        
+    }
+    
     @IBAction func cameraTapped(_ sender: UIBarButtonItem) {
         // Present the ImagePickerController
         present(imagePicker, animated: true, completion: nil)
